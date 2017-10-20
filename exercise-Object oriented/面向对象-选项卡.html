@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			div{
+				width: 200px;
+				height: 200px;
+				border: 1px solid orangered;
+				display: none;
+				margin-top: 20px;
+				padding: 20px;
+			}
+			.show{
+				display: block;
+			}
+			.active{
+				background-color: chocolate;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<button class="active">按钮一</button>
+		<button>按钮二</button>
+		<button>按钮三</button>
+		<div class="show">我是一</div>
+		<div>我是二</div>
+		<div>我是三</div>
+		
+		
+		
+		
+		<script type="text/javascript">
+			
+			function Tab(){//构造函数
+				this.btn=document.getElementsByTagName('button');//获取所有的按钮
+				this.box=document.getElementsByTagName('div');//获取所有的box
+			}
+			//原型事件
+			Tab.prototype.Event=function(){
+				var _this=this;//指Tab，每个函数this都会改变，要重新变量一下this
+				
+				for(var i=0;i<this.btn.length;i++){
+					this.btn[i].index=i;//默认点击位置
+					
+					this.btn[i].onclick=function(){
+						_this.tabs(this);//this是代表正在点击的按钮，正在点击的按钮实现tabs函数事件
+					}
+				}
+				
+			}
+			Tab.prototype.tabs=function(that){
+				
+				//清除
+				for(var i=0;i<this.btn.length;i++){
+					this.box[i].className='';
+					this.btn[i].className='';
+				}
+				that.className='active';//按钮添加背景色
+				this.box[that.index].className='show';//box显示
+			}
+			
+			var change=new Tab;//用new的方式调用函数
+			change.Event();//调用Event函数
+			
+		</script>
+	</body>
+</html>

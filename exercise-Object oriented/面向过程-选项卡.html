@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			#wrap div,#wrap2 div{
+				width: 200px;
+				height: 200px;
+				border: 1px solid orangered;
+				display: none;
+				margin-top: 20px;
+				padding: 20px;
+			}
+			#wrap .show,#wrap2 .show{
+				display: block;
+			}
+			.active{
+				background-color: chocolate;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<div id="wrap">
+			<button class="active">按钮一</button>
+			<button>按钮二</button>
+			<button>按钮三</button>
+			<div class="show">我是一</div>
+			<div>我是二</div>
+			<div>我是三</div>
+		</div>
+		<div id="wrap2">
+			<button class="active">按钮一</button>
+			<button>按钮二</button>
+			<button>按钮三</button>
+			<div class="show">我是一</div>
+			<div>我是二</div>
+			<div>我是三</div>
+		</div>
+		
+		
+		<button id="btn1">第一个停</button>
+		
+		<button id="btn2">第二个开</button>
+		
+		<button id="btn3">关/开</button>
+		
+		<button id="btn4">开？关</button>
+		
+		<button id="btn5">倒播</button>
+		
+		
+		<script type="text/javascript">
+			
+			function Tab(id){//构造函数
+				this.wrap=document.getElementById(id);
+				this.btn=this.wrap.getElementsByTagName('button');//获取所有的按钮
+				this.box=this.wrap.getElementsByTagName('div');//获取所有的box
+				this.num=0;
+				this.timer=null;
+				
+			}
+			//原型事件
+			Tab.prototype.Event=function(){
+				var _this=this;//指Tab，每个函数this都会改变，要重新变量一下this
+				
+				for(var i=0;i<this.btn.length;i++){
+					this.btn[i].index=i;//默认点击位置
+					
+					this.btn[i].onclick=function(){
+						_this.tabs(this.index);//this是代表正在点击的按钮，正在点击的按钮实现tabs函数事件
+					}
+				}
+				
+			}
+			Tab.prototype.tabs=function(index){
+				
+				//清除
+				for(var i=0;i<this.btn.length;i++){
+					this.box[i].className='';
+					this.btn[i].className='';
+				}
+				this.btn[index].className='active';//按钮添加背景色
+				this.box[index].className='show';//box显示
+			}
+			//播放
+			Tab.prototype.toPlay=function(){
+				var _this=this;//指向Tab
+				clearInterval(this.timer);//清除定时器
+				this.timer=setInterval(function(){
+					_this.num++;
+					_this.tabs(_this.num%=_this.btn.length);
+				},1000)
+			}
+			//倒播
+			Tab.prototype.upend=function(){
+				var _this=this;//指向Tab
+				clearInterval(this.timer);//清除定时器
+				this.timer=setInterval(function(){
+					_this.num--;
+					_this.num=(_this.num<0?_this.btn.length-1:_this.num);
+					_this.tabs(_this.num);
+				},1000);
+			}
+			//停止
+			Tab.prototype.stop=function(){
+				clearInterval(this.timer);
+				this.timer=null;
+			}
+			
+			var change=new Tab('wrap');//wrap下的实例化对象用new的方式调用函数
+			var change2=new Tab('wrap2');//wrap2下的实例化对象用new的方式调用函数
+			change.Event();//change调用Event函数
+			change2.Event();//change2调用Event函数
+			change.toPlay();//第一块播放
+			
+			var onOff=true;//初始化开关为开
+			
+			//第一个按钮点击停止
+			btn1.onclick=function(){
+				change.stop();
+			}
+			//第二个按钮点击播放
+			btn2.onclick=function(){
+				change2.toPlay();
+			}
+			//点击第三个按钮，会让播放的状态都关，关闭的状态都播放
+			btn3.onclick=function(){
+				if(onOff){
+					change2.stop();
+					change.stop();
+				}else{
+					change.toPlay();
+					change2.toPlay();
+				}
+				onOff=false;
+			}
+			//第四个按钮当关的状态，点击它播放；当开状态。点击它关闭
+			btn4.onclick=function(){
+				if(!change.timer){
+					change.toPlay();
+				}else{
+					change.stop();
+				}
+				
+				if(!change2.timer){
+					change2.toPlay();
+				}else{
+					change2.stop();
+				}
+			}
+			//点击第五个按钮倒着播放
+			btn5.onOff=true;
+			btn5.onclick=function(){
+				if(btn5.onOff){
+					change.upend();
+					change2.upend();
+				}else{
+					change.upend();
+					change2.upend();
+				}
+				btn5.onOff=false;
+			}
+			
+			
+		</script>
+	</body>
+</html>

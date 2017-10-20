@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			#box{
+				width: 100px;
+				height: 100px;
+				background-color: crimson;
+				position: absolute;
+				left: 0;
+				top: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			
+		</div>
+		
+		
+		
+		<script type="text/javascript">
+			
+			function Drag(id){//构造函数
+				this.box=document.getElementById(id);
+				this.disX=0;
+				this.disY=0;
+			}
+			Drag.prototype.init=function(){//初始化
+				var _this=this;
+				this.box.addEventListener('mousedown',down);
+				function down(ev){
+					_this.down(ev);
+				}
+				
+			}
+			Drag.prototype.down=function(ev){//按下
+				var _this=this;
+				this.disX=ev.clientX-this.box.offsetLeft;
+				this.disY=ev.clientY-this.box.offsetTop;
+				var move=function(ev){
+					_this.move(ev);
+				}
+				var up=function(ev){
+					_this.up(ev,move,up)
+				}
+				document.addEventListener('mousemove',move);
+				document.addEventListener('mouseup',up);
+				
+				ev.preventDefault();//清除默认行为
+			}
+			
+			Drag.prototype.move=function(ev){//box移动随鼠标移动
+				this.box.style.left=ev.clientX-this.disX+'px';
+				this.box.style.top=ev.clientY-this.disY+'px';
+			}
+			Drag.prototype.up=function(ev,move,up){//鼠标抬起，box移动终止
+				document.removeEventListener('mousemove',move);	
+				document.removeEventListener('mouseup',up);
+			}
+			
+			var d=new Drag('box');//用new的方式把传参box函数调用
+			
+			d.init();//调用init函数
+			
+		</script>
+		
+	</body>
+</html>
